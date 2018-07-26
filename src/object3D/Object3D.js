@@ -5,7 +5,7 @@ function Object3D(name, gui, object3D) {
 
   this.object3D = object3D;
 
-  const GuiValues = function() {
+  var GuiValues = function() {
 
     this.visible = object3D.visible;
 
@@ -61,10 +61,10 @@ Object3D.prototype = {
 
   set: function(type, key, value) {
 
-    let op_def = {
+    var op_def = {
       min: -2,
       max: 2,
-      step: 0.01,
+      step: 0.01
     };
 
     if (0 <= key.indexOf('rotation')) {
@@ -103,8 +103,7 @@ Object3D.prototype = {
       case 'bool': {
 
         this.folder.add(
-          this.vals,
-          key,
+          this.vals, key
         ).onChange(()=> {
           this.change()
         });
@@ -119,8 +118,9 @@ Object3D.prototype = {
           this.vals,
           key,
           op.min,
-          op.max,
-        ).step(op.step).onChange(()=> {
+          op.max
+        ).step(op.step)
+        .onChange(()=> {
           this.change()
         });
 
@@ -137,19 +137,19 @@ Object3D.prototype = {
     this.object3D.position.set(
       this.vals.position_x,
       this.vals.position_y,
-      this.vals.position_z,
+      this.vals.position_z
     );
 
     this.object3D.rotation.set(
       this.vals.rotation_x * Math.PI / 180,
       this.vals.rotation_y * Math.PI / 180,
-      this.vals.rotation_z * Math.PI / 180,
+      this.vals.rotation_z * Math.PI / 180
     );
 
     this.object3D.scale.set(
       this.vals.scale_x,
       this.vals.scale_y,
-      this.vals.scale_z,
+      this.vals.scale_z
     );
 
   },

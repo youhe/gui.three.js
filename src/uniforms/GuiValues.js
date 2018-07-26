@@ -69,10 +69,10 @@ GuiValues.prototype = {
 
       case 'v2': {
 
-        let tKey = key.slice(0, -2);
+        var tKey = key.slice(0, -2);
         return new THREE.Vector2(
           this.values[tKey + '_x'],
-          this.values[tKey + '_y'],
+          this.values[tKey + '_y']
         );
 
         break;
@@ -81,11 +81,11 @@ GuiValues.prototype = {
 
       case 'v3': {
 
-        let tKey = key.slice(0, -2);
+        var tKey = key.slice(0, -2);
         return [
           this.values[tKey + '_x'],
           this.values[tKey + '_y'],
-          this.values[tKey + '_z'],
+          this.values[tKey + '_z']
         ];
 
         break;
@@ -94,12 +94,12 @@ GuiValues.prototype = {
 
       case 'v4': {
 
-        let tKey = key.slice(0, -2);
+        var tKey = key.slice(0, -2);
         return [
           this.values[tKey + '_x'],
           this.values[tKey + '_y'],
           this.values[tKey + '_z'],
-          this.values[tKey + '_w'],
+          this.values[tKey + '_w']
         ];
 
         break;
@@ -111,7 +111,7 @@ GuiValues.prototype = {
         return {
           r: this.values[key].r / 255,
           g: this.values[key].g / 255,
-          b: this.values[key].b / 255,
+          b: this.values[key].b / 255
         };
 
         break;

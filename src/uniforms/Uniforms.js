@@ -22,7 +22,7 @@ Uniforms.prototype = {
 
   init: function(key, vals) {
 
-    let type = vals.type;
+    var type = vals.type;
 
     switch (type) {
 
@@ -82,7 +82,7 @@ Uniforms.prototype = {
 
       case 'c': {
 
-        let tValue = {};
+        var tValue = {};
         tValue.r = vals.value.r * 255;
         tValue.g = vals.value.g * 255;
         tValue.b = vals.value.b * 255;
@@ -98,11 +98,11 @@ Uniforms.prototype = {
 
   set: function(type, key, value, op) {
 
-    let op_def = {
+    var op_def = {
       visible: true,
       min: value / 2,
       max: value * 10,
-      step: 0.1,
+      step: 0.1
     };
 
     if (op !== undefined) {
@@ -140,8 +140,9 @@ Uniforms.prototype = {
 
         this.folder.add(
           this.vals.values,
-          key,
-        ).onChange(()=> {
+          key
+        )
+        .onChange(()=> {
           this.change()
         });
 
@@ -153,8 +154,9 @@ Uniforms.prototype = {
 
         this.folder.addColor(
           this.vals.values,
-          key,
-        ).onChange(()=> {
+          key
+        )
+        .onChange(()=> {
           this.change()
         });
 
@@ -168,8 +170,9 @@ Uniforms.prototype = {
           this.vals.values,
           key,
           op.min,
-          op.max,
-        ).step(op.step).onChange(()=> {
+          op.max
+        ).step(op.step)
+        .onChange(()=> {
           this.change()
         });
 
@@ -184,11 +187,11 @@ Uniforms.prototype = {
   change: function() {
 
     for (var key in this.vals.values) {
-      let tKey = this.vals.getKey(key);
+      var tKey = this.vals.getKey(key);
 
       if (tKey != '') {
 
-        let value = this.vals.getValue(key);
+        var value = this.vals.getValue(key);
         this.uniforms[tKey].value = value;
         this.uniforms[tKey].needsUpdate = true;
 
