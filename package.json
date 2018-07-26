@@ -1,0 +1,56 @@
+{
+  "name": "gui.three",
+  "version": "0.0.1",
+  "description": "Three.js & dat.GUI library",
+  "main": "build/gui.three.js",
+  "repository": "",
+  "jsnext:main": "",
+  "module": "",
+  "files": [
+    "package.json",
+    "LICENSE",
+    "README.md",
+    "build/gui.three.js",
+    "build/gui.three.min.js",
+    "src",
+    "examples/"
+  ],
+  "directories": {
+    "example": "examples"
+  },
+  "eslintConfig": {
+    "extends": "mdcs"
+  },
+  "scripts": {
+    "build": "rollup -c",
+    "start": "npm run dev",
+    "lint": "eslint src",
+    "test": "npm run build-test && qunit test/unit/three.source.unit.js",
+    "dev": "concurrently --names \"ROLLUP,HTTP\" -c \"bgBlue.bold,bgGreen.bold\" \"rollup -c -w -m inline\" \"serve --port 8080\""
+  },
+  "keywords": [
+    "three",
+    "three.js",
+    "3d",
+    "webgl",
+    "gui"
+  ],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": ""
+  },
+  "homepage": "",
+  "devDependencies": {
+    "concurrently": "^3.5.1",
+    "electron": "^2.0.2",
+    "eslint": "^4.19.1",
+    "eslint-config-mdcs": "^4.2.3",
+    "google-closure-compiler": "20180506.0.0",
+    "qunit": "^2.6.1",
+    "rollup": "^0.59.4",
+    "rollup-watch": "^4.3.1",
+    "serve": "6.5.8",
+    "uglify-js": "^3.3.28"
+  }
+}
