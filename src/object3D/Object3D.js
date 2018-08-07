@@ -1,149 +1,109 @@
-function Object3D(name, gui, object3D) {
+import { GuiValues } from '../common/GuiValues.js';
 
-  this.folder = gui.addFolder(name);
-  this.folder.open();
+function Object3D(name, gui, object3D) {
 
   this.object3D = object3D;
 
-  var GuiValues = function() {
-
-    this.visible = object3D.visible;
-
-    this.position_x = object3D.position.x;
-    this.position_y = object3D.position.y;
-    this.position_z = object3D.position.z;
-
-    this.rotation_x = object3D.rotation.x;
-    this.rotation_y = object3D.rotation.y;
-    this.rotation_z = object3D.rotation.z;
-
-    this.scale_x = object3D.scale.x;
-    this.scale_y = object3D.scale.y;
-    this.scale_z = object3D.scale.z;
-
-  };
   this.vals = new GuiValues();
+  this.vals.init(name, gui);
 
-  for (var key in this.vals) {
+  this.vals.add(
+    'bool', 'visible',
+    this.object3D.visible,
+    this,
+    null
+  );
 
-    this.init(key, this.vals[key]);
+  var pos_ops = {
+    min: -2,
+    max: 2,
+    step: .1
+  };
+  this.vals.add(
+    'num', 'pos_x',
+    this.object3D.position.x,
+    this,
+    pos_ops
+  );
+  this.vals.add(
+    'num', 'pos_y',
+    this.object3D.position.y,
+    this,
+    pos_ops
+  );
+  this.vals.add(
+    'num', 'pos_z',
+    this.object3D.position.z,
+    this,
+    pos_ops
+  );
 
-  }
+  var rot_ops = {
+    min: -180,
+    max: 180,
+    step: 1
+  };
+  this.vals.add(
+    'num', 'rot_x',
+    this.object3D.rotation.x,
+    this,
+    rot_ops
+  );
+  this.vals.add(
+    'num', 'rot_y',
+    this.object3D.rotation.y,
+    this,
+    rot_ops
+  );
+  this.vals.add(
+    'num', 'rot_z',
+    this.object3D.rotation.z,
+    this,
+    rot_ops
+  );
 
+  var scale_ops = {
+    min: 0.1,
+    max: 5,
+    step: .1
+  };
+  this.vals.add(
+    'num', 'scale_x',
+    this.object3D.scale.x,
+    this,
+    scale_ops
+  );
+  this.vals.add(
+    'num', 'scale_y',
+    this.object3D.scale.y,
+    this,
+    scale_ops
+  );
+  this.vals.add(
+    'num', 'scale_z',
+    this.object3D.scale.z,
+    this,
+    scale_ops
+  );
 }
 
 
 Object3D.prototype = {
-
-  init: function(key, val) {
-
-    switch (key) {
-
-      case 'visible': {
-
-        this.set('bool', key, val);
-
-        break;
-
-      };
-
-      default: {
-
-        this.set('number', key, val);
-
-        break;
-
-      }
-
-    };
-
-  },
-
-  set: function(type, key, value) {
-
-    var op_def = {
-      min: -2,
-      max: 2,
-      step: 0.01
-    };
-
-    if (0 <= key.indexOf('rotation')) {
-
-      op_def.min = -180;
-      op_def.max = 180;
-      op_def.step = 1;
-
-    }
-
-    if (0 <= key.indexOf('scale')) {
-
-      op_def.min = 0.1;
-      op_def.max = 5;
-
-    }
-
-    if (this.validation(op_def)) {
-
-      this.add(type, key, value, op_def);
-
-    }
-
-  },
-
-  validation: function(op) {
-
-    return true;
-
-  },
-
-  add: function(type, key, value, op) {
-
-    switch (type) {
-
-      case 'bool': {
-
-        this.folder.add(
-          this.vals, key
-        ).onChange(()=> {
-          this.change()
-        });
-
-        break;
-
-      };
-
-      default: {
-
-        this.folder.add(
-          this.vals,
-          key,
-          op.min,
-          op.max
-        ).step(op.step)
-        .onChange(()=> {
-          this.change()
-        });
-
-      };
-
-    };
-
-  },
 
   change: function() {
 
     this.object3D.visible = this.vals.visible;
 
     this.object3D.position.set(
-      this.vals.position_x,
-      this.vals.position_y,
-      this.vals.position_z
+      this.vals.pos_x,
+      this.vals.pos_y,
+      this.vals.pos_z
     );
 
     this.object3D.rotation.set(
-      this.vals.rotation_x * Math.PI / 180,
-      this.vals.rotation_y * Math.PI / 180,
-      this.vals.rotation_z * Math.PI / 180
+      this.vals.rot_x * Math.PI / 180,
+      this.vals.rot_y * Math.PI / 180,
+      this.vals.rot_z * Math.PI / 180
     );
 
     this.object3D.scale.set(
@@ -153,6 +113,7 @@ Object3D.prototype = {
     );
 
   },
+
 }
 
 export { Object3D };

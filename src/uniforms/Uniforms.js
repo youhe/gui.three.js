@@ -1,17 +1,16 @@
-import { GuiValues } from './GuiValues.js';
+import { GuiValues } from '../common/GuiValues.js';
 
 function Uniforms(name, gui, uniforms) {
-
-  this.folder = gui.addFolder(name);
-  this.folder.open();
 
   this.uniforms = uniforms;
 
   this.vals = new GuiValues();
+  this.vals.init(name, gui);
+
 
   for (var key in uniforms) {
 
-    this.init(key, uniforms[key]);
+    this.addVals(key, uniforms[key]);
 
   }
 
@@ -20,7 +19,7 @@ function Uniforms(name, gui, uniforms) {
 
 Uniforms.prototype = {
 
-  init: function(key, vals) {
+  addVals: function(key, vals) {
 
     var type = vals.type;
 
@@ -28,53 +27,12 @@ Uniforms.prototype = {
 
       case 'bool': {
 
-        this.set(type, key, vals.value, vals.options);
-
-        break;
-
-      };
-
-      case 'i': {
-
-        this.set(type, key, vals.value, vals.options);
-
-        break;
-
-      };
-
-      case 'f': {
-
-        this.set(type, key, vals.value, vals.options);
-
-        break;
-
-      };
-
-      case 'v2': {
-
-        this.set(type, key + '_x', vals.value[0], vals.options);
-        this.set(type, key + '_y', vals.value[1], vals.options);
-
-        break;
-
-      };
-
-      case 'v3': {
-
-        this.set(type, key + '_x', vals.value[0], vals.options);
-        this.set(type, key + '_y', vals.value[1], vals.options);
-        this.set(type, key + '_z', vals.value[2], vals.options);
-
-        break;
-
-      };
-
-      case 'v4': {
-
-        this.set(type, key + '_x', vals.value[0], vals.options);
-        this.set(type, key + '_y', vals.value[1], vals.options);
-        this.set(type, key + '_z', vals.value[2], vals.options);
-        this.set(type, key + '_w', vals.value[2], vals.options);
+        this.vals.add(
+          'bool', key,
+          vals.value,
+          this,
+          null
+        );
 
         break;
 
@@ -82,41 +40,97 @@ Uniforms.prototype = {
 
       case 'c': {
 
-        var tValue = {};
-        tValue.r = vals.value.r * 255;
-        tValue.g = vals.value.g * 255;
-        tValue.b = vals.value.b * 255;
-        this.set(type, key, tValue, vals.options);
+        var value = vals.value.clone();
+        value.r = value.r * 255;
+        value.g = value.g * 255;
+        value.b = value.b * 255;
+
+        this.vals.add(
+          'c', key,
+          value,
+          this,
+          null
+        );
 
         break;
 
       };
 
-    }
+      case 'v3': {
 
-  },
+        var keyStr = ['_x', '_y', '_z'];
+        var value = vals.value;
+        var ops = vals.options;
+        var ops_def = {
+          visible: true,
+          min: value.x / 2,
+          max: value.x * 10,
+          step: 0.1
+        };
 
-  set: function(type, key, value, op) {
+        if (ops !== undefined) {
 
-    var op_def = {
-      visible: true,
-      min: value / 2,
-      max: value * 10,
-      step: 0.1
-    };
+          if (ops.visible !== undefined)
+            ops_def.visible = ops.visible;
+          if (ops.min !== undefined)
+            ops_def.min = ops.min;
+          if (ops.max !== undefined)
+            ops_def.max = ops.max;
+          if (ops.step !== undefined)
+            ops_def.step = ops.step;
 
-    if (op !== undefined) {
+        }
 
-      if (op.visible !== undefined) op_def.visible = op.visible;
-      if (op.min !== undefined) op_def.min = op.min;
-      if (op.max !== undefined) op_def.max = op.max;
-      if (op.step !== undefined) op_def.step = op.step;
+        for (var i = 0; i < value.length; i++) {
+          this.vals.add(
+            'num', key + keyStr[i],
+            value[i],
+            this,
+            ops_def
+          );
+        }
 
-    }
 
-    if (this.validation(op_def)) {
+        break;
 
-      this.add(type, key, value, op_def);
+      };
+
+      default: {
+
+        var value = vals.value;
+        var ops = vals.options;
+
+        var ops_def = {
+          visible: true,
+          min: value / 2,
+          max: value * 10,
+          step: 0.1
+        };
+
+
+        if (ops !== undefined) {
+
+          if (ops.visible !== undefined)
+            ops_def.visible = ops.visible;
+          if (ops.min !== undefined)
+            ops_def.min = ops.min;
+          if (ops.max !== undefined)
+            ops_def.max = ops.max;
+          if (ops.step !== undefined)
+            ops_def.step = ops.step;
+
+        }
+
+        this.vals.add(
+          'num', key,
+          value,
+          this,
+          ops_def
+        );
+
+        break;
+
+      };
 
     }
 
@@ -130,76 +144,52 @@ Uniforms.prototype = {
 
   },
 
-  add: function(type, key, value, op) {
-
-    this.vals.add(type, key, value);
-
-    switch (type) {
-
-      case 'bool': {
-
-        this.folder.add(
-          this.vals.values,
-          key
-        )
-        .onChange(()=> {
-          this.change()
-        });
-
-        break;
-
-      };
-
-      case 'c': {
-
-        this.folder.addColor(
-          this.vals.values,
-          key
-        )
-        .onChange(()=> {
-          this.change()
-        });
-
-        break;
-
-      };
-
-      default: {
-
-        this.folder.add(
-          this.vals.values,
-          key,
-          op.min,
-          op.max
-        ).step(op.step)
-        .onChange(()=> {
-          this.change()
-        });
-
-        break;
-
-      };
-
-    }
-
-  },
-
   change: function() {
 
-    for (var key in this.vals.values) {
-      var tKey = this.vals.getKey(key);
+    for (var key in this.uniforms) {
+      var vals = this.uniforms[key];
+      var type = vals.type;
 
-      if (tKey != '') {
+      switch (type) {
 
-        var value = this.vals.getValue(key);
-        this.uniforms[tKey].value = value;
-        this.uniforms[tKey].needsUpdate = true;
+        case 'c': {
+          this.uniforms[key].value = {
+            r: this.vals[key].r / 255,
+            g: this.vals[key].g / 255,
+            b: this.vals[key].b / 255,
+          };
+          this.uniforms[key].needsUpdate = true;
+
+          break;
+
+        };
+
+        case 'v3': {
+          this.uniforms[key].value = {
+            x: this.vals[key + '_x'],
+            y: this.vals[key + '_y'],
+            z: this.vals[key + '_z'],
+          };
+          this.uniforms[key].needsUpdate = true;
+
+          break;
+
+        };
+
+        default: {
+          this.uniforms[key].value = this.vals[key];
+          this.uniforms[key].needsUpdate = true;
+
+          break;
+
+        };
 
       }
 
     }
 
   },
+
 }
 
 export { Uniforms };
