@@ -1,45 +1,43 @@
 import { GuiValues } from '../common/GuiValues.js';
 
 function Uniforms(name, gui, uniforms) {
-
   this.uniforms = uniforms;
 
   this.vals = new GuiValues();
-  this.vals.init(name, gui);
+  this.vals.init(name, gui, this);
 
+  for (var key in this.uniforms) {
 
-  for (var key in uniforms) {
-
-    this.addVals(key, uniforms[key]);
+    this.addVals(key, this.uniforms[key]);
 
   }
-
 }
 
 
 Uniforms.prototype = {
 
   addVals: function(key, vals) {
-
     var type = vals.type;
+    vals.isDisplay = true;
+
+    if (!this.validation(vals.options)) {
+      vals.isDisplay = false;
+      return;
+    }
 
     switch (type) {
 
       case 'bool': {
-
         this.vals.add(
           'bool', key,
           vals.value,
-          this,
           null
         );
 
         break;
-
       };
 
       case 'c': {
-
         var value = vals.value.clone();
         value.r = value.r * 255;
         value.g = value.g * 255;
@@ -48,146 +46,127 @@ Uniforms.prototype = {
         this.vals.add(
           'c', key,
           value,
-          this,
           null
         );
 
         break;
-
       };
 
-      case 'v3': {
-
-        var keyStr = ['_x', '_y', '_z'];
+      case 'v2': {},
+      case 'v3': {},
+      case 'v4': {
+        var keyStr = ['x', 'y', 'z', 'w'];
         var value = vals.value;
-        var ops = vals.options;
-        var ops_def = {
-          visible: true,
-          min: value.x / 2,
-          max: value.x * 10,
-          step: 0.1
-        };
-
-        if (ops !== undefined) {
-
-          if (ops.visible !== undefined)
-            ops_def.visible = ops.visible;
-          if (ops.min !== undefined)
-            ops_def.min = ops.min;
-          if (ops.max !== undefined)
-            ops_def.max = ops.max;
-          if (ops.step !== undefined)
-            ops_def.step = ops.step;
-
-        }
+        var ops = (vals.options === undefined) ? {} : vals.options;
 
         for (var i = 0; i < value.length; i++) {
+          var ops_def = {
+            visible: (ops.visible === undefined) ? true : ops.visible,
+            min:     (ops.min === undefined) ? value[i] * 0.5 : ops.min,
+            max:     (ops.max === undefined) ? value[i] * 10 : ops.max,
+            step:    (ops.step === undefined) ? 0.1 : ops.step,
+          };
           this.vals.add(
-            'num', key + keyStr[i],
+            'num', key + '_' + keyStr[i],
             value[i],
-            this,
             ops_def
           );
         }
 
+        break;
+      };
+
+      case 'm2v': {},
+      case 'm3v': {},
+      case 'm4v': {
 
         break;
-
       };
 
       default: {
-
         var value = vals.value;
-        var ops = vals.options;
-
+        var ops = (vals.options === undefined) ? {} : vals.options;
         var ops_def = {
-          visible: true,
-          min: value / 2,
-          max: value * 10,
-          step: 0.1
+          visible: (ops.visible === undefined) ? true : ops.visible,
+          min:     (ops.min === undefined) ? value[i] * 0.5 : ops.min,
+          max:     (ops.max === undefined) ? value[i] * 10 : ops.max,
+          step:    (ops.step === undefined) ? 0.1 : ops.step,
         };
-
-
-        if (ops !== undefined) {
-
-          if (ops.visible !== undefined)
-            ops_def.visible = ops.visible;
-          if (ops.min !== undefined)
-            ops_def.min = ops.min;
-          if (ops.max !== undefined)
-            ops_def.max = ops.max;
-          if (ops.step !== undefined)
-            ops_def.step = ops.step;
-
-        }
 
         this.vals.add(
           'num', key,
           value,
-          this,
           ops_def
         );
 
         break;
-
       };
 
     }
-
   },
 
   validation: function(op) {
+    if (op === undefined) return true;
 
-    if (!op.visible) return false;
+    if (op.visible === false) return false;
+    if (op.max < op.min) {
+      console.error('Error: options max < min.');
+      return false;
+    }
+    if (op.max < op.step) {
+      console.error('Error: options max < step.');
+      return false;
+    }
 
     return true;
-
   },
 
   change: function() {
-
     for (var key in this.uniforms) {
       var vals = this.uniforms[key];
       var type = vals.type;
 
-      switch (type) {
+      if (vals.isDisplay) {
 
-        case 'c': {
-          this.uniforms[key].value = {
-            r: this.vals[key].r / 255,
-            g: this.vals[key].g / 255,
-            b: this.vals[key].b / 255,
+        switch (type) {
+
+          case 'c': {
+            this.uniforms[key].value = {
+              r: this.vals[key].r / 255,
+              g: this.vals[key].g / 255,
+              b: this.vals[key].b / 255,
+            };
+            this.uniforms[key].needsUpdate = true;
+
+            break;
+
           };
-          this.uniforms[key].needsUpdate = true;
 
-          break;
+          case 'v3': {
+            this.uniforms[key].value = {
+              x: this.vals[key + '_x'],
+              y: this.vals[key + '_y'],
+              z: this.vals[key + '_z'],
+            };
+            this.uniforms[key].needsUpdate = true;
 
-        };
+            break;
 
-        case 'v3': {
-          this.uniforms[key].value = {
-            x: this.vals[key + '_x'],
-            y: this.vals[key + '_y'],
-            z: this.vals[key + '_z'],
           };
-          this.uniforms[key].needsUpdate = true;
 
-          break;
+          default: {
+            this.uniforms[key].value = this.vals[key];
+            this.uniforms[key].needsUpdate = true;
 
-        };
+            break;
 
-        default: {
-          this.uniforms[key].value = this.vals[key];
-          this.uniforms[key].needsUpdate = true;
+          };
 
-          break;
-
-        };
+        }
 
       }
 
     }
-
   },
 
 }

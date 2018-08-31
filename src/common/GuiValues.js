@@ -6,14 +6,15 @@ function GuiValues() {
 
 GuiValues.prototype = {
 
-  init: function(name, gui) {
+  init: function(name, gui, parentClass) {
 
     this.folder = gui.addFolder(name);
     this.folder.open();
+    this.parentClass = parentClass;
 
   },
 
-  add: function(type, key, val, parentClass, ops) {
+  add: function(type, key, val, ops) {
 
     this[key] = val;
 
@@ -24,7 +25,7 @@ GuiValues.prototype = {
         this.folder.add(
           this, key,
         )
-        .onChange(()=> {parentClass.change()});
+        .onChange(()=> {this.parentClass.change()});
 
         break;
 
@@ -35,7 +36,7 @@ GuiValues.prototype = {
         this.folder.addColor(
           this, key
         )
-        .onChange(()=> {parentClass.change()});
+        .onChange(()=> {this.parentClass.change()});
 
         break;
 
@@ -49,7 +50,7 @@ GuiValues.prototype = {
           this, key,
           ops.min, ops.max
         ).step(ops.step)
-        .onChange(()=> {parentClass.change()});
+        .onChange(()=> {this.parentClass.change()});
 
         break;
 

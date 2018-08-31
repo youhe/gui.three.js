@@ -5,12 +5,11 @@ function Object3D(name, gui, object3D) {
   this.object3D = object3D;
 
   this.vals = new GuiValues();
-  this.vals.init(name, gui);
+  this.vals.init(name, gui, this);
 
   this.vals.add(
     'bool', 'visible',
     this.object3D.visible,
-    this,
     null
   );
 
@@ -22,19 +21,16 @@ function Object3D(name, gui, object3D) {
   this.vals.add(
     'num', 'pos_x',
     this.object3D.position.x,
-    this,
     pos_ops
   );
   this.vals.add(
     'num', 'pos_y',
     this.object3D.position.y,
-    this,
     pos_ops
   );
   this.vals.add(
     'num', 'pos_z',
     this.object3D.position.z,
-    this,
     pos_ops
   );
 
@@ -46,19 +42,16 @@ function Object3D(name, gui, object3D) {
   this.vals.add(
     'num', 'rot_x',
     this.object3D.rotation.x,
-    this,
     rot_ops
   );
   this.vals.add(
     'num', 'rot_y',
     this.object3D.rotation.y,
-    this,
     rot_ops
   );
   this.vals.add(
     'num', 'rot_z',
     this.object3D.rotation.z,
-    this,
     rot_ops
   );
 
@@ -70,19 +63,16 @@ function Object3D(name, gui, object3D) {
   this.vals.add(
     'num', 'scale_x',
     this.object3D.scale.x,
-    this,
     scale_ops
   );
   this.vals.add(
     'num', 'scale_y',
     this.object3D.scale.y,
-    this,
     scale_ops
   );
   this.vals.add(
     'num', 'scale_z',
     this.object3D.scale.z,
-    this,
     scale_ops
   );
 }
