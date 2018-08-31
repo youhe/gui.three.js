@@ -52,8 +52,8 @@ Uniforms.prototype = {
         break;
       };
 
-      case 'v2': {},
-      case 'v3': {},
+      case 'v2': {};
+      case 'v3': {};
       case 'v4': {
         var keyStr = ['x', 'y', 'z', 'w'];
         var value = vals.value;
@@ -76,8 +76,8 @@ Uniforms.prototype = {
         break;
       };
 
-      case 'm2v': {},
-      case 'm3v': {},
+      case 'm2v': {};
+      case 'm3v': {};
       case 'm4v': {
 
         break;
