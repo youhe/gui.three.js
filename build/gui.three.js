@@ -48,7 +48,6 @@
 	      }
 	      case 'c': {
 	        o = this.setOps(key, this.u[key].value, 0);
-	        console.log(o);
 	        this.u[key].tValue = this.u[key].value.clone();
 	        this.u[key].tValue.r = this.u[key].tValue.r * 255;
 	        this.u[key].tValue.g = this.u[key].tValue.g * 255;
@@ -105,7 +104,6 @@
 
 	  setOps: function(key, value) {
 	    var ops = (this.u[key].options === undefined) ? {} : this.u[key].options;
-	    console.log(ops);
 	    return {
 	      min:  (ops.min === undefined) ? value * 0.5 : ops.min,
 	      max:  (ops.max === undefined) ? value * 10 : ops.max,
