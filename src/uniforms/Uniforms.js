@@ -19,7 +19,8 @@ Uniforms.prototype = {
 
     switch (type) {
       case 'bool': {
-        this.f.add(this.u[key], 'value').name(key);
+        this.f.add(this.u[key], 'value')
+        .name(key);
         break;
       };
       case 'c': {
