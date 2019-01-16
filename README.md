@@ -19,6 +19,13 @@ gui.three.js
 const gui = new dat.GUI();
 
 // for mesh
+/**
+ * @param GUI name
+ * @param dat.GUI
+ * @param THREE.Mesh
+ * @param folder hidden
+ * @param change method
+ */
 new GUITHREE.Object3D('mesh', gui, mesh, true, null);
 
 
@@ -33,6 +40,13 @@ const uniforms = {
 	depth_color: {type: 'bool', value: true, options: {name: '深度'}},
 };
 
+/**
+ * @param GUI name
+ * @param dat.GUI
+ * @param uniforms
+ * @param folder hidden
+ * @param change method
+ */
 new GUITHREE.Uniforms('obj-uniforms', gui, uniforms, true, null);
 
 ```
