@@ -43,76 +43,21 @@ Uniforms.prototype = {
         break;
       };
       case 'v2': {
-        o = this.setOps(key, this.u[key].value[0]);
-        this.f.add(this.u[key].value, 0, o.min, o.max)
-        .step(o.step)
-        .name(o.name + '_x')
-        .onChange(()=> {
-          this.changeMethod();
-        });
-
-        o = this.setOps(key, this.u[key].value[1]);
-        this.f.add(this.u[key].value, 1, o.min, o.max)
-        .step(o.step)
-        .name(o.name + '_y')
-        .onChange(()=> {
-          this.changeMethod();
-        });
+        this.addVector(key, 0);
+        this.addVector(key, 1);
         break;
       };
       case 'v3': {
-        o = this.setOps(key, this.u[key].value[0]);
-        this.f.add(this.u[key].value, 0, o.min, o.max)
-        .step(o.step)
-        .name(o.name + '_x')
-        .onChange(()=> {
-          this.changeMethod();
-        });
-        o = this.setOps(key, this.u[key].value[1]);
-        this.f.add(this.u[key].value, 1, o.min, o.max)
-        .step(o.step)
-        .name(o.name + '_y')
-        .onChange(()=> {
-          this.changeMethod();
-        });
-        o = this.setOps(key, this.u[key].value[2]);
-        this.f.add(this.u[key].value, 2, o.min, o.max)
-        .step(o.step)
-        .name(o.name + '_z')
-        .onChange(()=> {
-          this.changeMethod();
-        });
+        this.addVector(key, 0);
+        this.addVector(key, 1);
+        this.addVector(key, 2);
         break;
       };
       case 'v4': {
-        o = this.setOps(key, this.u[key].value[0]);
-        this.f.add(this.u[key].value, 0, o.min, o.max)
-        .step(o.step)
-        .name(o.name + '_x')
-        .onChange(()=> {
-          this.changeMethod();
-        });
-        o = this.setOps(key, this.u[key].value[1]);
-        this.f.add(this.u[key].value, 1, o.min, o.max)
-        .step(o.step)
-        .name(o.name + '_y')
-        .onChange(()=> {
-          this.changeMethod();
-        });
-        o = this.setOps(key, this.u[key].value[2]);
-        this.f.add(this.u[key].value, 2, o.min, o.max)
-        .step(o.step)
-        .name(o.name + '_z')
-        .onChange(()=> {
-          this.changeMethod();
-        });
-        o = this.setOps(key, this.u[key].value[3]);
-        this.f.add(this.u[key].value, 3, o.min, o.max)
-        .step(o.step)
-        .name(o.name + '_w')
-        .onChange(()=> {
-          this.changeMethod();
-        });
+        this.addVector(key, 0);
+        this.addVector(key, 1);
+        this.addVector(key, 2);
+        this.addVector(key, 3);
         break;
       };
       case 'i': {
@@ -148,6 +93,22 @@ Uniforms.prototype = {
       step: (ops.step === undefined) ? 0.1 : ops.step,
       name: (ops.name === undefined) ? key : ops.name,
     };
+  },
+
+  addVector: function(key, index) {
+    let tKey;
+    if (index == 0) tKey = (this.u[key].value[0]) ? 0 : 'x';
+    else if (index == 1) tKey = (this.u[key].value[1]) ? 1 : 'y';
+    else if (index == 2) tKey = (this.u[key].value[2]) ? 2 : 'z';
+
+    const o = this.setOps(key, this.u[key].value[tKey]);
+    const nameArr = ['x', 'y', 'z'];
+    this.f.add(this.u[key].value, tKey, o.min, o.max)
+    .step(o.step)
+    .name(o.name + '_' + nameArr[index])
+    .onChange(()=> {
+      this.changeMethod();
+    });
   },
 
   validation: function(op) {
