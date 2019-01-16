@@ -18,7 +18,6 @@
 	<script>
 		var camera, scene, renderer;
 		var geometry, material, mesh;
-		var gui;
 
 		init();
 		animate();
@@ -40,8 +39,8 @@
 			renderer.setSize( window.innerWidth, window.innerHeight );
 			document.body.appendChild( renderer.domElement );
 
-			gui = new dat.GUI();
-			new GUITHREE.Object3D('mesh', gui, mesh);
+			var gui = new dat.GUI();
+			new GUITHREE.Object3D('mesh', gui, mesh, true, null);
 
 		}
 

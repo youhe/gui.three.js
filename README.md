@@ -15,42 +15,26 @@ gui.three.js
 ```
 
 ```javascript
-var camera, scene, renderer;
-var geometry, material, mesh;
-var gui;
 
-init();
-animate();
+const gui = new dat.GUI();
 
-function init() {
+// for mesh
+new GUITHREE.Object3D('mesh', gui, mesh, true, null);
 
-	camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.01, 10 );
-	camera.position.z = 1;
 
-	scene = new THREE.Scene();
+// for uniforms
+const uniforms = {
+	time:        {type: 'i',    value: 0,          options: {visible: false}},
+	mv_radius:   {type: 'i',    value: .1,         options: {min: 0, step: .01, name: '距離'}},
+	mv_speed:    {type: 'f',    value: .03,        options: {min: 0, max: .1, step: .01, name: '速度'}},
+	dist_color:  {type: 'c',    value: new THREE.Color(0x10dd20), options: {name: 'カラー'}},
+	scale:       {type: 'v3',   value: [1, 1, 1],  options: {min: .1, max: 5, step: .1, name: 'スケール'}},
+	l_direction: {type: 'v3',   value: [1, 1, .5], options: {min: -1, max: 1, step: .01, name: '向き'}},
+	depth_color: {type: 'bool', value: true, options: {name: '深度'}},
+};
 
-	geometry = new THREE.BoxGeometry( 0.2, 0.2, 0.2 );
-	material = new THREE.MeshNormalMaterial();
+new GUITHREE.Uniforms('obj-uniforms', gui, uniforms, true, null);
 
-	mesh = new THREE.Mesh( geometry, material );
-	scene.add( mesh );
-
-	gui = new dat.GUI();
-	new GUITHREE.Object3D('mesh', gui, mesh);
-
-	renderer = new THREE.WebGLRenderer( { antialias: true } );
-	renderer.setSize( window.innerWidth, window.innerHeight );
-	document.body.appendChild( renderer.domElement );
-
-}
-
-function animate() {
-
-	requestAnimationFrame( animate );
-
-	renderer.render( scene, camera );
-
-}
 ```
 
 [<img src="./ss1.png" width="100%">](./ss1.png)

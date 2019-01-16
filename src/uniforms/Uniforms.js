@@ -1,9 +1,9 @@
-function Uniforms(name, gui, uniforms, changeMethod = null) {
+function Uniforms(name, gui, uniforms, folder = true, changeMethod = null) {
   this.u = uniforms;
   this.changeMethod = (changeMethod == null) ? function() {} : changeMethod;
 
   this.f = gui.addFolder(name);
-  this.f.open();
+  if (folder) this.f.open();
 
   for (var key in this.u) {
     this.addPrm(key);
@@ -19,8 +19,9 @@ Uniforms.prototype = {
 
     switch (type) {
       case 'bool': {
+        o = this.setOps(key, this.u[key].value, 0);
         this.f.add(this.u[key], 'value')
-        .name(key);
+        .name(o.name);
         break;
       };
       case 'c': {
