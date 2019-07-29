@@ -62,12 +62,21 @@ Uniforms.prototype = {
       };
       case 'i': {
         o = this.setOps(key, this.u[key].value);
-        this.f.add(this.u[key], 'value', o.min, o.max)
-        .step(o.step)
-        .name(o.name)
-        .onChange(()=> {
-          this.changeMethod();
-        });
+        // セレクトかどうか判定
+        if (o.select != null) {
+          this.f.add(this.u[key], 'value', o.select)
+          .name(o.name)
+          .onChange(()=> {
+            this.changeMethod();
+          });
+        } else {
+          this.f.add(this.u[key], 'value', o.min, o.max)
+          .step(o.step)
+          .name(o.name)
+          .onChange(()=> {
+            this.changeMethod();
+          });
+        }
         break;
       };
       case 'f': {
@@ -92,6 +101,7 @@ Uniforms.prototype = {
       max:  (ops.max === undefined) ? value * 10 : ops.max,
       step: (ops.step === undefined) ? 0.1 : ops.step,
       name: (ops.name === undefined) ? key : ops.name,
+      select: (ops.select === undefined) ? null : ops.select,
     };
   },
 

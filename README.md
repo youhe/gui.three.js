@@ -38,6 +38,7 @@ const uniforms = {
 	scale:       {type: 'v3',   value: new THREE.Vector3(1, 1, 1),  options: {min: .1, max: 5, step: .1, name: 'スケール'}},
 	l_direction: {type: 'v3',   value: [1, 1, .5], options: {min: -1, max: 1, step: .01, name: '向き'}},
 	depth_color: {type: 'bool', value: true, options: {name: '深度'}},
+	type: {type: 'i', value: 0, options: {name: 'タイプ', select: {'Sphere': 0, 'Random': 1}}},
 };
 
 /**

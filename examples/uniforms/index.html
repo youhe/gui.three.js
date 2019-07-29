@@ -17,7 +17,7 @@
 
 	<script>
 		var camera, scene, renderer;
-		var geometry, material, mesh;
+		var geometryI, material, mesh;
 		var time = 0;
 
 		init();
@@ -30,12 +30,18 @@
 
 			scene = new THREE.Scene();
 
-			var geometry = new THREE.IcosahedronBufferGeometry(.2, 4);
-			var rrr = new Float32Array(geometry.attributes.position.count);
-			for (var i = 0; i < geometry.attributes.position.count; i++) {
+			var geometryI = new THREE.IcosahedronBufferGeometry(.2, 4);
+			var rrr = new Float32Array(geometryI.attributes.position.count);
+			var pos_rdm = new Float32Array(geometryI.attributes.position.count * 3);
+			for (var i = 0; i < geometryI.attributes.position.count; i++) {
 				rrr[i] = Math.random() * 10;
+				pos_rdm[i * 3 + 0] = Math.random() * 2 - 1;
+				pos_rdm[i * 3 + 1] = Math.random() * 2 - 1;
+				pos_rdm[i * 3 + 2] = Math.random() * 2 - 1;
 			}
-			geometry.addAttribute('r', new THREE.BufferAttribute(rrr, 1));
+			geometryI.addAttribute('pos_ico', new THREE.BufferAttribute(geometryI.attributes.position.array, 3));
+			geometryI.addAttribute('pos_rdm', new THREE.BufferAttribute(pos_rdm, 3));
+			geometryI.addAttribute('r', new THREE.BufferAttribute(rrr, 1));
 
 
 	    var uniforms = {
@@ -46,6 +52,13 @@
 				scale:       {type: 'v3',   value: new THREE.Vector3(1, 1, 1),  options: {min: .1, max: 5, step: .1, name: 'スケール'}},
 				l_direction: {type: 'v3',   value: [1, 1, .5], options: {min: -1, max: 1, step: .01, name: '向き'}},
 				depth_color: {type: 'bool', value: true, options: {name: '深度'}},
+				type: {type: 'i', value: 0, options: {
+					name: 'タイプ',
+					select: {
+						'Sphere': 0,
+						'Random': 1,
+					}
+				}},
 	    };
 
 			var gui = new dat.GUI();
@@ -61,7 +74,10 @@
 	        uniform vec3 scale;
 	        uniform vec3 dist_color;
 					uniform vec3 l_direction;
+					uniform int type;
 
+					attribute vec3 pos_ico;
+					attribute vec3 pos_rdm;
 	        attribute float r;
 
 	        varying vec4 vColor;
@@ -69,7 +85,10 @@
 	        void main() {
 	          float a = sin(r + time * mv_speed);
 
-	          vec3 nPosition = normalize(position.xyz);
+						vec3 acP;
+						if (type == 0) acP = pos_ico;
+						else if (type == 1) acP = pos_rdm;
+	          vec3 nPosition = normalize(acP.xyz);
 
 	          float diffuse = (dot(nPosition, l_direction) + abs(a)) / 2.;
 	          diffuse = max(diffuse, 0.2);
@@ -100,7 +119,7 @@
 	      `,
 	    });
 
-			mesh = new THREE.Mesh(geometry, material);
+			mesh = new THREE.Mesh(geometryI, material);
 	    scene.add(mesh);
 
 			renderer = new THREE.WebGLRenderer( { antialias: true } );
